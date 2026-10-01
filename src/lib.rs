@@ -1,7 +1,4 @@
-#![feature(
-    concat_idents,
-    proc_macro_hygiene
-)]
+#![feature(proc_macro_hygiene)]
 #![allow(
     unused_macros
 )]
@@ -28,13 +25,13 @@ pub const BASE_CHARA_ID : &str = "ui_chara_[CHARACTER]";
 pub const BASE_FIGHTER_KIND : &str = "fighter_kind_[CHARACTER]";
 
 // The Series your character come from
-pub  const CHARA_SERIES : &str = "ui_series_mario"; // If you're not sure, just put "mario"
+pub const CHARA_SERIES : &str = "ui_series_mario"; // If you're not sure, just put "mario"
 
 // The characall of the base character
-pub  const BASE_CHARACALL : &str = "vc_narration_characall_[CHARACTER]";
+pub const BASE_CHARACALL : &str = "vc_narration_characall_[CHARACTER]";
 
 // If you have a personnalized vc_narration_characall type true, else, let it to false
-pub const IS_CHARA_CALL: bool = false ;
+pub const IS_CHARA_CALL: bool = false;
 
 // Your narration_characall ID here if you have one :
 pub const YOUR_CHARACALL : &str = "vc_narration_characall_[CHARACTER]";
@@ -81,7 +78,7 @@ extern "C" fn mods_mounted(_ev: arcropolis_api::Event) {
                 marked_slots.push(x as _);
                 MARKED_COLORS[x as usize] = true;
                 if lowest_color == -1 {
-                    lowest_color = x as _ ;
+                    lowest_color = x as _;
                 }
             }
         }
@@ -95,7 +92,7 @@ extern "C" fn mods_mounted(_ev: arcropolis_api::Event) {
 
 
 
-    let color_num = {
+    let _color_num = {
         unsafe {
             let mut index = lowest_color;
             while index < 256 && MARKED_COLORS[index as usize] {
@@ -109,7 +106,7 @@ extern "C" fn mods_mounted(_ev: arcropolis_api::Event) {
 
     the_csk_collection_api::allow_ui_chara_hash_online(smash::hash40(YOUR_CHARA_ID));
 
-    let actual_characall:&'static str = if IS_CHARA_CALL {
+    let actual_characall: &'static str = if IS_CHARA_CALL {
         the_csk_collection_api::add_narration_characall_entry(YOUR_CHARACALL);
         YOUR_CHARACALL
     } else {
