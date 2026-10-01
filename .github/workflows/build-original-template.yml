@@ -4,7 +4,8 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - ci/validate-original-template
+      - main
+      - "prototype/**"
     paths:
       - "src/**"
       - "Cargo.toml"
