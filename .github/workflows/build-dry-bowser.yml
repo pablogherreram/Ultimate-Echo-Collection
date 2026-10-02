@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - reorganizacion-multiproyecto
     paths:
       - "projects/dry-bowser/plugin-source/**"
       - ".github/workflows/build-dry-bowser.yml"
