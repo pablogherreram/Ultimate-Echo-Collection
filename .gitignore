@@ -1,0 +1,14 @@
+target/
+**/target/
+dist/
+**/dist/
+*.nro
+*.zip
+*.7z
+*.rar
+.vscode/
+.idea/
+Thumbs.db
+Desktop.ini
+*.tmp
+*.bak
