@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - reorganizacion-multiproyecto
     paths:
       - "template/plugin-source/**"
       - ".github/workflows/build-template.yml"
