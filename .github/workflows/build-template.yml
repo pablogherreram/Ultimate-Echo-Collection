@@ -1,10 +1,10 @@
 name: Build generic auto-slotting template
-
 on:
   workflow_dispatch:
   push:
     branches:
       - main
+      - reorganizacion-multiproyecto
     paths:
       - "template/plugin-source/**"
       - ".github/workflows/build-template.yml"
