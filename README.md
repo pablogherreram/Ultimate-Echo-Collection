@@ -1,4 +1,8 @@
-# Ultimate Echo Collection
+<p align="center">
+  <img src="assets/LOGO_Ultimate-Echo-Collection_White.png" alt="Logo Ultimate Echo Collection" width="500"/>
+</p>
+
+#
 
 A multi-project repository for creating, maintaining, and compiling visual Echo Fighter registration plugins for Super Smash Bros. Ultimate.
 
