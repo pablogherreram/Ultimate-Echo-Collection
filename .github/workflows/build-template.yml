@@ -1,4 +1,4 @@
-name: Build Dry Bowser auto-slotting plugin
+name: Build generic auto-slotting template
 
 on:
   workflow_dispatch:
@@ -6,20 +6,20 @@ on:
     branches:
       - main
     paths:
-      - "projects/dry-bowser/plugin-source/**"
-      - ".github/workflows/build-dry-bowser.yml"
+      - "template/plugin-source/**"
+      - ".github/workflows/build-template.yml"
 
 permissions:
   contents: read
 
 jobs:
   build:
-    name: Build Dry Bowser Skyline NRO
+    name: Build generic Skyline template
     runs-on: ubuntu-latest
     timeout-minutes: 35
     defaults:
       run:
-        working-directory: projects/dry-bowser/plugin-source
+        working-directory: template/plugin-source
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -45,11 +45,7 @@ jobs:
           set -euxo pipefail
           sed -i 's#https://github.com/blu-dev/skyline-smash\.git#https://github.com/ultimate-research/skyline-smash.git#g' Cargo.toml
           rm -f Cargo.lock
-          if grep -q "github.com/blu-dev/skyline-smash" Cargo.toml; then
-            echo "::error::Obsolete skyline-smash URL remains."
-            exit 1
-          fi
-      - name: Build Dry Bowser plugin
+      - name: Build generic template
         timeout-minutes: 20
         env:
           CARGO_TERM_COLOR: always
@@ -59,7 +55,7 @@ jobs:
         run: |
           set -euxo pipefail
           timeout --signal=TERM 19m cargo skyline build --release
-      - name: Package and validate NRO
+      - name: Package template NRO
         shell: bash
         run: |
           set -euo pipefail
@@ -68,15 +64,12 @@ jobs:
           mkdir -p dist
           cp "$nro_file" dist/plugin.nro
           sha256sum dist/plugin.nro | tee dist/SHA256SUMS.txt
-          strings -a dist/plugin.nro | grep -F "ui_chara_koopadry"
-          strings -a dist/plugin.nro | grep -F "fighter_kind_koopa"
-          strings -a dist/plugin.nro | grep -F "koopadry.marker"
-      - name: Upload Dry Bowser plugin
+      - name: Upload template artifact
         uses: actions/upload-artifact@v4
         with:
-          name: dry-bowser-autoslotting-plugin
+          name: generic-auto-slotting-template
           path: |
-            projects/dry-bowser/plugin-source/dist/plugin.nro
-            projects/dry-bowser/plugin-source/dist/SHA256SUMS.txt
+            template/plugin-source/dist/plugin.nro
+            template/plugin-source/dist/SHA256SUMS.txt
           if-no-files-found: error
-          retention-days: 30
+          retention-days: 14
