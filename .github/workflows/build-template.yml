@@ -73,3 +73,4 @@ jobs:
             template/plugin-source/dist/SHA256SUMS.txt
           if-no-files-found: error
           retention-days: 14
+
