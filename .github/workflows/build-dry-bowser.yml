@@ -1,10 +1,10 @@
 name: Build Dry Bowser auto-slotting plugin
-
 on:
   workflow_dispatch:
   push:
     branches:
       - main
+      - reorganizacion-multiproyecto
     paths:
       - "projects/dry-bowser/plugin-source/**"
       - ".github/workflows/build-dry-bowser.yml"
