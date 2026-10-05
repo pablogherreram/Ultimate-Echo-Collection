@@ -70,7 +70,7 @@ jobs:
           strings -a dist/plugin.nro | grep -F "ui_chara_baller"
           strings -a dist/plugin.nro | grep -F "fighter_kind_tantan"
           strings -a dist/plugin.nro | grep -F "baller.marker"
-      - name: Upload Dry Bowser plugin
+      - name: Upload Baller plugin
         uses: actions/upload-artifact@v4
         with:
           name: baller-autoslotting-plugin
