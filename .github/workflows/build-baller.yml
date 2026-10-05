@@ -1,0 +1,81 @@
+name: Build Baller auto-slotting plugin
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "projects/baller/plugin-source/**"
+      - ".github/workflows/build-baller.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build Baller Skyline NRO
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    defaults:
+      run:
+        working-directory: projects/baller/plugin-source
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Install Linux build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential pkg-config libssl-dev binutils
+      - name: Install cargo-skyline
+        run: |
+          cargo install cargo-skyline --locked
+          cargo skyline --version
+      - name: Prepare Skyline standard library
+        timeout-minutes: 10
+        env:
+          CARGO_TERM_COLOR: always
+          RUST_BACKTRACE: "1"
+          GIT_TERMINAL_PROMPT: "0"
+        run: |
+          set -euxo pipefail
+          timeout --signal=TERM 9m cargo skyline update-std
+      - name: Patch obsolete skyline-smash dependency
+        run: |
+          set -euxo pipefail
+          sed -i 's#https://github.com/blu-dev/skyline-smash\.git#https://github.com/ultimate-research/skyline-smash.git#g' Cargo.toml
+          rm -f Cargo.lock
+          if grep -q "github.com/blu-dev/skyline-smash" Cargo.toml; then
+            echo "::error::Obsolete skyline-smash URL remains."
+            exit 1
+          fi
+      - name: Build Baller plugin
+        timeout-minutes: 20
+        env:
+          CARGO_TERM_COLOR: always
+          CARGO_NET_GIT_FETCH_WITH_CLI: "true"
+          RUST_BACKTRACE: full
+          GIT_TERMINAL_PROMPT: "0"
+        run: |
+          set -euxo pipefail
+          timeout --signal=TERM 19m cargo skyline build --release
+      - name: Package and validate NRO
+        shell: bash
+        run: |
+          set -euo pipefail
+          nro_file="$(find target -type f -name '*.nro' -print -quit)"
+          test -n "$nro_file" || { echo "::error::No NRO generated."; exit 1; }
+          mkdir -p dist
+          cp "$nro_file" dist/plugin.nro
+          sha256sum dist/plugin.nro | tee dist/SHA256SUMS.txt
+          strings -a dist/plugin.nro | grep -F "ui_chara_baller"
+          strings -a dist/plugin.nro | grep -F "fighter_kind_tantan"
+          strings -a dist/plugin.nro | grep -F "baller.marker"
+      - name: Upload Dry Bowser plugin
+        uses: actions/upload-artifact@v4
+        with:
+          name: baller-autoslotting-plugin
+          path: |
+            projects/baller/plugin-source/dist/plugin.nro
+            projects/baller/plugin-source/dist/SHA256SUMS.txt
+          if-no-files-found: error
+          retention-days: 30
