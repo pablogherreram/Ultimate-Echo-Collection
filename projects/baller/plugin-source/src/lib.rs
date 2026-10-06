@@ -25,13 +25,13 @@ pub const BASE_CHARA_ID : &str = "ui_chara_tantan";
 pub const BASE_FIGHTER_KIND : &str = "fighter_kind_tantan";
 
 // The Series your character come from
-pub const CHARA_SERIES : &str = "ui_series_arms"; // If you're not sure, just put "mario"
+pub const CHARA_SERIES : &str = "ui_series_roblox"; // If you're not sure, just put "mario"
 
 // The characall of the base character
 pub const BASE_CHARACALL : &str = "vc_narration_characall_tantan";
 
 // If you have a personnalized vc_narration_characall type true, else, let it to false
-pub const IS_CHARA_CALL: bool = false;
+pub const IS_CHARA_CALL: bool = true;
 
 // Your narration_characall ID here if you have one :
 pub const YOUR_CHARACALL : &str = "vc_narration_characall_baller";
@@ -105,6 +105,43 @@ extern "C" fn mods_mounted(_ev: arcropolis_api::Event) {
     // Preform csk collection calls here (allow online, narration characall entry, add chara db, add layout db, w/e)
 
     the_csk_collection_api::allow_ui_chara_hash_online(smash::hash40(YOUR_CHARA_ID));
+
+        the_csk_collection_api::add_series_db_entry_info(
+        the_csk_collection_api::SeriesDatabaseEntry {
+            ui_series_id: smash::hash40("ui_series_roblox"),
+
+            clone_from_ui_series_id: Some(
+                smash::hash40("ui_series_mario")
+            ),
+
+            name_id: the_csk_collection_api::StringType::Overwrite(
+                the_csk_collection_api::CStrCSK::new("roblox")
+            ),
+
+            disp_order:
+                the_csk_collection_api::SignedByteType::Optional(Some(0)),
+
+            disp_order_sound:
+                the_csk_collection_api::SignedByteType::Optional(Some(0)),
+
+            save_no:
+                the_csk_collection_api::SignedByteType::Optional(Some(-1)),
+
+            shown_as_series_in_directory:
+                the_csk_collection_api::BoolType::Optional(Some(false)),
+
+            is_dlc:
+                the_csk_collection_api::BoolType::Optional(Some(false)),
+
+            is_patch:
+                the_csk_collection_api::BoolType::Optional(Some(false)),
+
+            is_use_amiibo_bg:
+                the_csk_collection_api::BoolType::Optional(Some(false)),
+
+            ..Default::default()
+        }
+    );
 
     let actual_characall: &'static str = if IS_CHARA_CALL {
         the_csk_collection_api::add_narration_characall_entry(YOUR_CHARACALL);
