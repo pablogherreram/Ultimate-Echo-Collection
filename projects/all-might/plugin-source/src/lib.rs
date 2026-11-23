@@ -7,6 +7,21 @@ use std::collections::HashMap;
 mod tyrant;
 pub static mut ALLMIGHT_COLORS: [bool; 256] = [false; 256];
 
+pub unsafe extern "C" fn is_tyrant(module_accessor: *mut BattleObjectModuleAccessor) -> bool {
+    if utility::get_kind(&mut *module_accessor) == *FIGHTER_KIND_CAPTAIN {
+        let color = WorkModule::get_int(
+            module_accessor,
+            *FIGHTER_INSTANCE_WORK_ID_INT_COLOR
+        );
+
+        color >= 0
+            && (color as usize) < ALLMIGHT_COLORS.len()
+            && ALLMIGHT_COLORS[color as usize]
+    } else {
+        false
+    }
+}
+
 use smash::hash40;
 use smash_script::macros::*;
 use {
@@ -17,7 +32,7 @@ use {
         lib::{lua_const::*, L2CAgent},
     },
     smash_script::*,
-    smashline::{*, Priority::*}
+    smashline::{*, Priority}
 };
 use skyline::hooks::{Region, getRegionAddress};
 
